@@ -39,10 +39,35 @@ $.fn.bgPanel = function(options) {
 	$(".bgpanel .colorbox").on("click", function(e) {
 		var selectedColor = $(e.target).css("background-color");
 		Log("Clicked box color " + selectedColor);
-		$(options.paintObject).css("background-color", selectedColor);
+		changeBackground(selectedColor);
+		setCookie("bgColor", selectedColor, 1);
 	});
+	
+	function changeBackground(color) {
+		$(options.paintObject).css("background-color", color);
+	}
 	
 	function Log(string) {
 		if (DEBUG_MODE) console.log(string);
 	}
+	
+	function setCookie(cname, cvalue, exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + "; " + expires;
+	}
+	function getCookie(cname) {
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0; i<ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1);
+			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+		}
+		return "";
+	}
+	
+	var bgColor = getCookie("bgColor");
+	if (bgColor) changeBackground(bgColor);
 };
